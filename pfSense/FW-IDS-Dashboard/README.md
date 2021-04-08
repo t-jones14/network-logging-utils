@@ -20,4 +20,6 @@ sudo apt-get install git wget software-properties-common -y
 <br>
 ### Step 2 - Download Automated Installer
 <br>
-`wget <insert url here>`
+```
+wget <insert url here>
+```
