@@ -21,5 +21,5 @@ sudo apt-get install git wget software-properties-common -y
 ### Step 2 - Download Automated Installer
 <br>
 ```
-wget /insert url here/
+wget https://url.url/install.sh
 ```
