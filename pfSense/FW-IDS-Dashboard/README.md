@@ -18,6 +18,7 @@ sudo apt-get update && apt-get upgrade
 sudo apt-get install git wget software-properties-common -y
 ```
 <br>
+
 ### Step 2 - Download Automated Installer
 <br>
 
