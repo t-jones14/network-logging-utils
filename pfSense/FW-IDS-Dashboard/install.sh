@@ -1,59 +1,56 @@
 #!/bin/sh
 
-say () {
+declare HTTPADDR
+
+say() {
     echo "$@" | sed \
-            -e "s/\(\(@\(red\|green\|yellow\|blue\|magenta\|cyan\|white\|reset\|b\|u\)\)\+\)[[]\{2\}\(.*\)[]]\{2\}/\1\4@reset/g" \
-            -e "s/@red/$(tput setaf 1)/g" \
-            -e "s/@green/$(tput setaf 2)/g" \
-            -e "s/@yellow/$(tput setaf 3)/g" \
-            -e "s/@blue/$(tput setaf 4)/g" \
-            -e "s/@magenta/$(tput setaf 5)/g" \
-            -e "s/@cyan/$(tput setaf 6)/g" \
-            -e "s/@white/$(tput setaf 7)/g" \
-            -e "s/@reset/$(tput sgr0)/g" \
-            -e "s/@b/$(tput bold)/g" \
-            -e "s/@u/$(tput sgr 0 1)/g"
+    -e "s/\(\(@\(red\|green\|yellow\|blue\|magenta\|cyan\|white\|reset\|b\|u\)\)\+\)[[]\{2\}\(.*\)[]]\{2\}/\1\4@reset/g" \
+    -e "s/@red/$(tput setaf 1)/g" \
+    -e "s/@green/$(tput setaf 2)/g" \
+    -e "s/@yellow/$(tput setaf 3)/g" \
+    -e "s/@blue/$(tput setaf 4)/g" \
+    -e "s/@magenta/$(tput setaf 5)/g" \
+    -e "s/@cyan/$(tput setaf 6)/g" \
+    -e "s/@white/$(tput setaf 7)/g" \
+    -e "s/@reset/$(tput sgr0)/g" \
+    -e "s/@b/$(tput bold)/g" \
+    -e "s/@u/$(tput sgr 0 1)/g"
 }
 # Let's validate the IP address for them fat fingererers.
-function validateIpAddress () {
-    function pass () {
-        local addr = $1
-        say @u@green[[$addr is a valid IP address]]
-        printf "\n"
-        return $addr
-    }
-    function fail () {
-        getIpAddress
-    }
+function validateIpAddress() {
+
     ip=${1:-$1}
     if expr "$ip" : '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$' >/dev/null; then
-    for i in 1 2 3 4; do
-        if [ $(echo "$ip" | cut -d. -f$i) -gt 255 ]; then
-        say @b@red[[$ip is not a valid IP address. Try again.]]
-        printf "\n"
-        fail
-        fi
-    done
-        pass $1
+        for i in 1 2 3 4; do
+            if [ $(echo "$ip" | cut -d. -f$i) -gt 255 ]; then
+                printf "${ip} is not a valid IP address. Try again."
+                #say @b@red[[$ip is not a valid IP address. Try again.]]
+                printf "\n"
+                fail
+            fi
+        done
+        pass $ip
     else
         printf "\n\n"
         say @b@red[[You messed something up horribly... Do not do whatever you did again... Try again, geesh! REF: $1 is probably not what you wanted it to be.]]
         fail
     fi
-    ##if [[ $1 =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    ##    say @u@green[[$1 is a valid IP address]]
-    ##    printf "\n"
-    ##    finishGraylog $1
-    ##else
-    ##    echo "$1 is not a valid IP address. Try again."
-    ##    getIpAddress
-    ##fi
 }
 # Prompt for user to enter an IP address
-function getIpAddress () {
+function getIpAddress() {
     read -p "Enter an IP Address: " grayloghttp
     printf = "\n"
     validateIpAddress $grayloghttp
+}
+function pass() {
+    var=$1
+    #say @u@green[[$var is a valid IP address]]
+    printf "${var} is not a valid IP address.\n"
+    HTTPADDR=$var
+    return
+}
+function fail() {
+    getIpAddress
 }
 # Get the latest package lists
 printf "\n"
@@ -149,9 +146,8 @@ getIpAddress
 printf "\n"
 say @b@green[[Wrapping Up Graylog Installation...]]
 printf "\n"
-HTTPADDR=$(getIpAddress)
-sudo -E sed -i -e 's/#http_bind_address = 127.0.0.1:9000/http_bind_address = '$HTTPADDR':9400/' /etc/graylog/server/server.conf
-    say @b@green[[HTTP Bind Address Set To: $HTTPADDR]]
+sudo -E sed -i -e 's/#http_bind_address = 127.0.0.1:9000/http_bind_address = '$HTTPADDR':9000/' /etc/graylog/server/server.conf
+say @b@green[[HTTP Bind Address Set To: $HTTPADDR]]
 printf "\n\n"
 ####wget -t0 -c https://github.com/DocSpring/geolite2-city-mirror/raw/master/GeoLite2-City.tar.gz
 ####tar -xvf GeoLite2-City.tar.gz
