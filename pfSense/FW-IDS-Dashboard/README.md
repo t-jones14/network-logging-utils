@@ -5,7 +5,6 @@
 * Fresh Install of Ubuntu 20.04 Focal (Minimal)
 * At LEAST 8Gb RAM
 
-<br>
 ## Installation
 <br>
 Let's start by installing a few prereqs for our automated installer...
