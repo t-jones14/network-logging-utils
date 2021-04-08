@@ -12,16 +12,10 @@ Let's start by installing a few prereqs for our automated installer...
 <br>
 ### Step 1 - Installer Prerequisites
 
-```
-sudo apt-get update && apt-get upgrade
-```
+`sudo apt-get update && apt-get upgrade`
 <br>
-```
-sudo apt-get install git wget software-properties-common -y
-```
+`sudo apt-get install git wget software-properties-common -y`
 <br>
 ### Step 2 - Download Automated Installer
 <br>
-```
-wget <insert url here>
-```
+`wget <insert url here>`
