@@ -111,7 +111,7 @@ say @b@yellow[[========================]]
 wget -q https://artifacts.elastic.co/GPG-KEY-elasticsearch -O myKey
 apt-key add myKey
 echo "deb https://artifacts.elastic.co/packages/oss-6.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list
-apt-get update && sudo apt-get install elasticsearch-oss
+apt update && apt install elasticsearch-oss
 tee -a /etc/elasticsearch/elasticsearch.yml > /dev/null <<EOT
 cluster.name: graylog
 action.auto_create_index: false
