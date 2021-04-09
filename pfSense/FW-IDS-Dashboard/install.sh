@@ -56,18 +56,17 @@ function fail() {
 printf "\n"
 say @b@yellow[[Getting Latest Packages]]
 say @b@yellow[[=======================]]
-####apt-get update && apt-get upgrade -y
+apt update
 printf "\n\n"
 say @b@green[[Done!]]
-printf "\n\n"
+printf "\n"
 # Ensure base packages are installed
 printf "\n"
 say @b@yellow[[Adding Base Packages and Repositories]]
-say @b@yellow[[=====================================]]
 # Add Universe repo
-printf "\n"
-say @b@yellow[[Adding Universe Repository]]
-say @b@yellow[[==========================]]
+printf "\n\n"
+say @b@magenta[[Adding Universe Repository]]
+say @b@magenta[[==========================]]
 add-apt-repository universe
 printf "\n\n"
 say @b@green[[Done!]]
@@ -78,7 +77,7 @@ printf "\n"
 printf "\n"
 say @b@yellow[[Updating Package Lists]]
 say @b@yellow[[======================]]
-####apt-get update && apt-get upgrade -y
+apt update
 printf "\n"
 say @b@green[[Done!]]
 printf "\n\n"
@@ -95,10 +94,10 @@ printf "\n\n"
 # Install MongoDB
 say @b@yellow[[Installing MongoDB]]
 say @b@yellow[[==================]]
-####apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
-####echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
-####apt-get update
-apt-get install -y mongodb-org
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+apt update
+apt install mongodb-org -y
 systemctl daemon-reload
 systemctl enable mongod.service
 systemctl restart mongod.service
@@ -109,14 +108,14 @@ printf "\n\n"
 # Install Elasticsearch
 say @b@yellow[[Installing Elasticsearch]]
 say @b@yellow[[========================]]
-####wget -q https://artifacts.elastic.co/GPG-KEY-elasticsearch -O myKey
-####apt-key add myKey
-####echo "deb https://artifacts.elastic.co/packages/oss-6.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list
-####apt-get update && sudo apt-get install elasticsearch-oss
-####tee -a /etc/elasticsearch/elasticsearch.yml > /dev/null <<EOT
-####cluster.name: graylog
-####action.auto_create_index: false
-####EOT
+wget -q https://artifacts.elastic.co/GPG-KEY-elasticsearch -O myKey
+apt-key add myKey
+echo "deb https://artifacts.elastic.co/packages/oss-6.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list
+apt-get update && sudo apt-get install elasticsearch-oss
+tee -a /etc/elasticsearch/elasticsearch.yml > /dev/null <<EOT
+cluster.name: graylog
+action.auto_create_index: false
+EOT
 systemctl daemon-reload
 systemctl enable elasticsearch.service
 systemctl restart elasticsearch.service
@@ -127,9 +126,9 @@ printf "\n\n"
 # Install Graylog
 say @b@yellow[[Installing Graylog]]
 say @b@yellow[[==================]]
-####wget https://packages.graylog2.org/repo/packages/graylog-3.3-repository_latest.deb
-####dpkg -i graylog-3.3-repository_latest.deb
-####apt-get update && sudo apt-get install graylog-server graylog-integrations-plugins
+wget https://packages.graylog2.org/repo/packages/graylog-3.3-repository_latest.deb
+dpkg -i graylog-3.3-repository_latest.deb
+apt update && apt install graylog-server graylog-integrations-plugins -y
 SECRET=$(pwgen -s 96 1)
 sudo -E sed -i -e 's/password_secret =.*/password_secret = '$SECRET'/' /etc/graylog/server/server.conf
 printf "\n\n"
@@ -149,9 +148,9 @@ printf "\n"
 sudo -E sed -i -e 's/#http_bind_address = 127.0.0.1:9000/http_bind_address = '$HTTPADDR':9000/' /etc/graylog/server/server.conf
 say @b@green[[HTTP Bind Address Set To: $HTTPADDR]]
 printf "\n\n"
-####wget -t0 -c https://github.com/DocSpring/geolite2-city-mirror/raw/master/GeoLite2-City.tar.gz
-####tar -xvf GeoLite2-City.tar.gz
-####cp GeoLite2-City_*/GeoLite2-City.mmdb /etc/graylog/server
+wget -t0 -c https://github.com/DocSpring/geolite2-city-mirror/raw/master/GeoLite2-City.tar.gz
+tar -xvf GeoLite2-City.tar.gz
+cp GeoLite2-City_*/GeoLite2-City.mmdb /etc/graylog/server
 systemctl daemon-reload
 systemctl enable graylog-server.service
 systemctl start graylog-server.service
